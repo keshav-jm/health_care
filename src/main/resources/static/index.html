@@ -1,402 +1,1092 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telemedicine, Billing & Procurement Platform</title>
-    <!-- Tailwind CSS CDN -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HealthCore OS — Healthcare Management & Operations</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-100 font-sans text-slate-800">
 
-<!-- Top Navigation Bar -->
-<header class="bg-indigo-700 text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold tracking-wide">Healthcare Telemedicine & Operations Management</h1>
-        <span class="text-xs bg-indigo-900 px-3 py-1 rounded-full text-indigo-200">System Live (Port 8080)</span>
-    </div>
-</header>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- Main Workspace -->
-<main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Top Section: Patient Registration & Consultation Intake -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <!-- Form 1: Patient Master Registration -->
-        <section class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 space-y-4">
-            <h2 class="text-lg font-bold text-indigo-900 border-b pb-2">1. Patient Registration</h2>
-            <form id="patientRegForm" class="space-y-3">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Full Name</label>
-                        <input type="text" id="regName" placeholder="e.g. Anitha Raj" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">UHID</label>
-                        <input type="text" id="regUhid" placeholder="UHID-1001" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Age</label>
-                        <input type="number" id="regAge" placeholder="32" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Gender</label>
-                        <select id="regGender" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                            <option value="Female">Female</option>
-                            <option value="Male">Male</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Phone</label>
-                        <input type="text" id="regPhone" placeholder="9876543210" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2 rounded transition">Register Patient</button>
-            </form>
-            <div id="patientRegStatus" class="hidden text-xs p-3 rounded"></div>
-        </section>
-
-        <!-- Form 2: Patient Intake & Triage -->
-        <section class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 space-y-4">
-            <h2 class="text-lg font-bold text-indigo-900 border-b pb-2">2. Clinical Consultation & Triage</h2>
-            <form id="intakeForm" class="space-y-3">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Patient ID</label>
-                        <input type="number" id="patientId" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required value="1">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Doctor ID</label>
-                        <input type="number" id="doctorId" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required value="1">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Chief Symptoms</label>
-                    <input type="text" id="symptoms" placeholder="e.g. Shortness of Breath, High Fever" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Heart Rate (BPM)</label>
-                    <input type="number" id="heartRate" placeholder="110" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2 rounded transition">Submit Consultation</button>
-            </form>
-            <div id="intakeStatus" class="hidden text-xs p-3 rounded"></div>
-        </section>
-
-    </div>
-
-    <!-- Middle Section: Billing, Invoices & Purchase Orders -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <!-- Form 3: Billing & Invoice Creation -->
-        <section class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 space-y-4">
-            <h2 class="text-lg font-bold text-indigo-900 border-b pb-2">3. Create Patient Invoice & Record Payment</h2>
-            <form id="invoiceForm" class="space-y-3">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Patient ID</label>
-                        <input type="number" id="invPatientId" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required value="1">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Amount ($)</label>
-                        <input type="number" step="0.01" id="invAmount" placeholder="150.00" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Status</label>
-                        <select id="invStatus" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                            <option value="PAID">PAID</option>
-                            <option value="PENDING">PENDING</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Payment Mode</label>
-                        <select id="invPayMode" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                            <option value="CASH">CASH</option>
-                            <option value="CARD">CARD</option>
-                            <option value="UPI">UPI</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold py-2 rounded transition">Generate Invoice</button>
-            </form>
-            <div id="invoiceStatus" class="hidden text-xs p-3 rounded"></div>
-        </section>
-
-        <!-- Form 4: Procurement & Purchase Order Entry -->
-        <section class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 space-y-4">
-            <h2 class="text-lg font-bold text-indigo-900 border-b pb-2">4. Supply Purchase Order (Procurement)</h2>
-            <form id="poForm" class="space-y-3">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Supplier ID</label>
-                        <input type="number" id="poSupplierId" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required value="1">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Total Cost ($)</label>
-                        <input type="number" step="0.01" id="poCost" placeholder="5000.00" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Item Description</label>
-                    <input type="text" id="poItem" list="medicationOptions" placeholder="Select or type item (e.g. Amoxicillin 500mg)" class="w-full border rounded p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
-                    <datalist id="medicationOptions">
-                        <option value="Amoxicillin 500mg (Antibiotic)">
-                        <option value="Azithromycin 250mg (Antibiotic)">
-                        <option value="Ciprofloxacin 500mg (Antibiotic)">
-                        <option value="Doxycycline 100mg (Antibiotic)">
-                        <option value="Paracetamol 500mg (Analgesic)">
-                        <option value="Surgical Gloves & Masks (Medical Supplies)">
-                        <option value="IV Saline Solution 500ml (Fluids)">
-                    </datalist>
-                </div>
-                <button type="submit" class="w-full bg-slate-700 hover:bg-slate-800 text-white text-sm font-semibold py-2 rounded transition">Submit Purchase Order</button>
-            </form>
-            <div id="poStatus" class="hidden text-xs p-3 rounded"></div>
-        </section>
-
-    </div>
-
-    <!-- Bottom Section: Profit & Loss Report and Budget Summary -->
-    <section class="space-y-6">
-
-        <!-- Cards: P&L Financial Summary -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-semibold text-slate-500 uppercase">Total Clinical Income</span>
-                <p id="totalIncome" class="text-xl font-bold text-emerald-600 mt-1">$0.00</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-semibold text-slate-500 uppercase">Supply Expenses</span>
-                <p id="totalExpenses" class="text-xl font-bold text-rose-600 mt-1">$0.00</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-semibold text-slate-500 uppercase">Profit & Loss Net Balance</span>
-                <p id="netBalance" class="text-xl font-bold text-indigo-600 mt-1">$0.00</p>
-            </div>
-        </div>
-
-        <!-- Table: Departmental Budget Allocation -->
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h2 class="text-lg font-bold text-indigo-900">5. Departmental Budget Utilization Summary</h2>
-                <button onclick="loadFinancialData()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1 rounded">Refresh Report</button>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm border-collapse">
-                    <thead>
-                    <tr class="bg-slate-50 border-b text-xs font-semibold text-slate-600 uppercase">
-                        <th class="p-3">Department</th>
-                        <th class="p-3">Allocated Grant</th>
-                        <th class="p-3">Spent</th>
-                        <th class="p-3">Remaining Balance</th>
-                    </tr>
-                    </thead>
-                    <tbody id="budgetTableBody">
-                    <tr>
-                        <td colspan="4" class="p-4 text-center text-slate-400 text-xs">Loading budgets...</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </section>
-
-</main>
-
-<!-- JavaScript REST Engine -->
-<script>
-    const API_BASE = 'http://localhost:8080/api';
-
-    // Load Financial Reports & Budget Data
-    async function loadFinancialData() {
-        try {
-            // Fetch P&L Report
-            const plRes = await fetch(`${API_BASE}/reports/profit-and-loss`);
-            if (plRes.ok) {
-                const plData = await plRes.json();
-                document.getElementById('totalIncome').innerText = `$${plData.totalClinicalIncome ? plData.totalClinicalIncome.toFixed(2) : '0.00'}`;
-                document.getElementById('totalExpenses').innerText = `$${plData.totalSupplyExpenses ? plData.totalSupplyExpenses.toFixed(2) : '0.00'}`;
-                document.getElementById('netBalance').innerText = `$${plData.netProfitOrLoss ? plData.netProfitOrLoss.toFixed(2) : '0.00'}`;
-            }
-
-            // Fetch Budget Summary
-            const budgetRes = await fetch(`${API_BASE}/reports/budget-summary`);
-            if (budgetRes.ok) {
-                const budgets = await budgetRes.json();
-                const tbody = document.getElementById('budgetTableBody');
-                tbody.innerHTML = '';
-
-                if (!budgets || budgets.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400 text-xs">No active departmental budgets found.</td></tr>';
-                    return;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dustbg: '#f4f4f0',
+                        dustcard: '#ffffff',
+                        dustpanel: '#e9e8e2',
+                        goldaccent: '#d97706',
+                        goldhover: '#b45309',
+                        goldlight: '#fef3c7',
+                        goldborder: '#fde68a'
+                    },
+                    boxShadow: {
+                        warm: '0 10px 30px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.03)'
+                    }
                 }
-
-                budgets.forEach(b => {
-                    const row = `
-                        <tr class="border-b hover:bg-slate-50">
-                            <td class="p-3 font-medium text-slate-800">${b.department || 'N/A'}</td>
-                            <td class="p-3">$${b.allocatedAmount ? b.allocatedAmount.toFixed(2) : '0.00'}</td>
-                            <td class="p-3 text-rose-600">$${b.spentAmount ? b.spentAmount.toFixed(2) : '0.00'}</td>
-                            <td class="p-3 text-emerald-600 font-semibold">$${b.remainingAmount ? b.remainingAmount.toFixed(2) : '0.00'}</td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                });
             }
+        };
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: #f4f4f0;
+            color: #1c1917;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid #e5e5de;
+        }
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e5de;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+        }
+        .input {
+            width: 100%;
+            border-radius: .75rem;
+            border: 1px solid #d6d3d1;
+            background: #fafaf9;
+            padding: .72rem .85rem;
+            color: #1c1917;
+            outline: none;
+        }
+        .input:focus {
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+        .btn {
+            transition: transform .15s ease, opacity .15s ease, background .15s ease;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .nav-active {
+            background: #fef3c7;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+        .hidden-section { display:none !important; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 999px; }
+        .toast { animation: toastIn .2s ease-out; }
+        @keyframes toastIn {
+            from { opacity:0; transform: translateY(8px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-stone-800">
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-5xl grid lg:grid-cols-2 gap-6 items-stretch">
+        <div class="hidden lg:flex card rounded-3xl p-10 flex-col justify-between">
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="h-11 w-11 rounded-2xl bg-amber-100 border border-amber-200 flex items-center justify-center">
+                        <i data-lucide="heart-pulse" class="text-amber-700"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-xl text-stone-900">HealthCore <span class="text-amber-600">OS</span></div>
+                        <div class="text-xs text-stone-500">Healthcare Management & Operations</div>
+                    </div>
+                </div>
+                <h1 class="text-4xl font-bold leading-tight text-stone-900">One operating layer for safer, smarter healthcare operations.</h1>
+                <p class="text-stone-600 mt-5 leading-7">
+                    Manage patient intake, triage, consultations, billing, procurement and operational analytics from one role-aware workspace.
+                </p>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-xs">
+                <div class="glass rounded-2xl p-4"><i data-lucide="shield-check" class="text-amber-600 mb-2"></i><div class="font-semibold text-stone-800">Role-aware</div><div class="text-stone-500 mt-1">RBAC-ready</div></div>
+                <div class="glass rounded-2xl p-4"><i data-lucide="activity" class="text-amber-600 mb-2"></i><div class="font-semibold text-stone-800">Live triage</div><div class="text-stone-500 mt-1">Queue visibility</div></div>
+                <div class="glass rounded-2xl p-4"><i data-lucide="bar-chart-3" class="text-amber-600 mb-2"></i><div class="font-semibold text-stone-800">Analytics</div><div class="text-stone-500 mt-1">Ops insights</div></div>
+            </div>
+        </div>
+
+        <div class="card rounded-3xl p-6 sm:p-8">
+            <div class="lg:hidden flex items-center gap-3 mb-8">
+                <div class="h-11 w-11 rounded-2xl bg-amber-100 border border-amber-200 flex items-center justify-center">
+                    <i data-lucide="heart-pulse" class="text-amber-700"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-xl text-stone-900">HealthCore <span class="text-amber-600">OS</span></div>
+                    <div class="text-xs text-stone-500">Healthcare Operations</div>
+                </div>
+            </div>
+
+            <div class="mb-7">
+                <div class="text-sm text-amber-700 font-semibold">Secure portal</div>
+                <h2 class="text-3xl font-bold mt-1 text-stone-900">Sign in to your workspace</h2>
+                <p class="text-stone-500 mt-2 text-sm">Choose your role to load the appropriate operational view.</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 p-1 rounded-2xl bg-stone-200 mb-6">
+                <button class="role-tab rounded-xl px-3 py-3 text-sm font-semibold border border-transparent" data-role="patient">Patient</button>
+                <button class="role-tab rounded-xl px-3 py-3 text-sm font-semibold border border-transparent" data-role="doctor">Doctor</button>
+                <button class="role-tab rounded-xl px-3 py-3 text-sm font-semibold border border-transparent" data-role="admin">Admin / Ops</button>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-stone-600">Email / User ID</label>
+                    <input id="loginEmail" class="input mt-1" placeholder="patient@healthcore.org" required />
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-stone-600">Password</label>
+                    <input id="loginPassword" type="password" class="input mt-1" placeholder="••••••••" required />
+                </div>
+
+                <div id="loginError" class="hidden rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-sm p-3"></div>
+
+                <button class="btn w-full rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 shadow-md">
+                    Sign in
+                </button>
+            </form>
+
+            <div class="mt-5">
+                <div class="text-xs font-semibold text-stone-500 mb-2">Quick-fill demo access</div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="demo-btn rounded-xl border border-stone-300 bg-stone-100 p-2.5 text-xs hover:border-amber-500 text-stone-700 font-medium" data-demo="patient">Patient demo</button>
+                    <button class="demo-btn rounded-xl border border-stone-300 bg-stone-100 p-2.5 text-xs hover:border-amber-500 text-stone-700 font-medium" data-demo="doctor">Doctor demo</button>
+                    <button class="demo-btn rounded-xl border border-stone-300 bg-stone-100 p-2.5 text-xs hover:border-amber-500 text-stone-700 font-medium" data-demo="admin">Admin demo</button>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-5 border-t border-stone-200 text-xs text-stone-500">
+                Backend authentication: <span id="authBackendStatus" class="text-emerald-600 font-semibold">checking...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="appScreen" class="hidden min-h-screen">
+    <header class="sticky top-0 z-40 glass border-b border-stone-300">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+            <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-xl hover:bg-stone-200"><i data-lucide="menu"></i></button>
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="h-10 w-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center">
+                    <i data-lucide="heart-pulse" class="text-amber-700"></i>
+                </div>
+                <div class="hidden sm:block">
+                    <div class="font-bold text-stone-900">HealthCore <span class="text-amber-600">OS</span></div>
+                    <div class="text-[10px] text-stone-500">Operations Platform</div>
+                </div>
+            </div>
+
+            <div class="hidden md:flex flex-1 max-w-xl mx-auto">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 h-4 w-4 text-stone-400"></i>
+                    <input id="globalSearch" class="input pl-9 py-2.5" placeholder="Search modules, patients, invoices... Ctrl / Cmd + K" />
+                </div>
+            </div>
+
+            <div class="ml-auto flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 text-xs text-stone-500">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    API <span id="apiStatusText" class="font-semibold text-emerald-600">online</span>
+                </div>
+                <div class="h-9 w-9 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold shadow" id="profileAvatar">A</div>
+                <div class="hidden sm:block text-right">
+                    <div id="profileName" class="text-sm font-semibold text-stone-900">Admin</div>
+                    <div id="profileRole" class="text-[11px] text-stone-500">Operations</div>
+                </div>
+                <button id="logoutBtn" class="p-2 rounded-xl hover:bg-stone-200 text-stone-600" title="Sign out"><i data-lucide="log-out"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-[1600px] mx-auto flex">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-[65px] left-0 z-30 h-[calc(100vh-65px)] w-72 -translate-x-full lg:translate-x-0 transition-transform glass border-r border-stone-300 p-4 overflow-y-auto">
+            <div class="text-[10px] uppercase font-bold tracking-widest text-stone-400 px-3 mb-2">Workspace</div>
+            <nav id="navMenu" class="space-y-1"></nav>
+
+            <div class="mt-6 p-4 rounded-2xl bg-amber-50 border border-amber-200">
+                <div class="flex items-center gap-2 text-sm font-semibold text-amber-900"><i data-lucide="lock-keyhole" class="h-4 w-4 text-amber-700"></i> Access policy</div>
+                <p class="text-xs text-amber-800 mt-2">Navigation and KPI visibility are filtered by the signed-in role.</p>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0 p-4 sm:p-6">
+            <div class="max-w-[1350px] mx-auto">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+                    <div>
+                        <div class="text-xs text-amber-700 font-bold uppercase tracking-widest">Overview</div>
+                        <h1 id="pageTitle" class="text-3xl sm:text-4xl font-bold text-stone-900 mt-1">Operations Dashboard</h1>
+                        <p id="pageSubtitle" class="text-stone-500 mt-2">Real-time view of healthcare operations.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="refreshBtn" class="btn px-4 py-2.5 rounded-xl border border-stone-300 bg-white text-stone-700 text-sm font-semibold flex items-center gap-2 shadow-sm"><i data-lucide="refresh-cw" class="h-4 w-4 text-amber-600"></i> Refresh</button>
+                        <button id="newActionBtn" class="btn px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm flex items-center gap-2 shadow-sm"><i data-lucide="plus" class="h-4 w-4"></i> New</button>
+                    </div>
+                </div>
+
+                <!-- KPI GRID -->
+                <section id="kpiSection" class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+                    <div class="card rounded-2xl p-5">
+                        <div class="flex items-center justify-between"><span class="text-sm font-medium text-stone-500">Total Patients</span><i data-lucide="users" class="h-4 w-4 text-amber-600"></i></div>
+                        <div id="kpiPatients" class="text-3xl font-bold text-stone-900 mt-3">—</div>
+                        <div class="text-xs text-emerald-600 font-medium mt-2">Live registry</div>
+                    </div>
+                    <div class="card rounded-2xl p-5">
+                        <div class="flex items-center justify-between"><span class="text-sm font-medium text-stone-500">Triage Queue</span><i data-lucide="activity" class="h-4 w-4 text-amber-600"></i></div>
+                        <div id="kpiTriage" class="text-3xl font-bold text-stone-900 mt-3">—</div>
+                        <div class="text-xs text-stone-500 mt-2">Waiting consultations</div>
+                    </div>
+                    <div class="card rounded-2xl p-5 admin-only">
+                        <div class="flex items-center justify-between"><span class="text-sm font-medium text-stone-500">Revenue</span><i data-lucide="trending-up" class="h-4 w-4 text-emerald-600"></i></div>
+                        <div id="kpiRevenue" class="text-3xl font-bold text-emerald-600 mt-3">₹—</div>
+                        <div class="text-xs text-emerald-600 font-medium mt-2">Collected payments</div>
+                    </div>
+                    <div class="card rounded-2xl p-5 admin-only">
+                        <div class="flex items-center justify-between"><span class="text-sm font-medium text-stone-500">Budget Remaining</span><i data-lucide="wallet" class="h-4 w-4 text-amber-600"></i></div>
+                        <div id="kpiBudget" class="text-3xl font-bold text-stone-900 mt-3">₹—</div>
+                        <div class="text-xs text-stone-500 mt-2">Departmental allocation</div>
+                    </div>
+                </section>
+
+                <!-- DASHBOARD -->
+                <section id="dashboardSection" class="page-section">
+                    <div class="grid xl:grid-cols-3 gap-4">
+                        <div class="xl:col-span-2 card rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-5">
+                                <div>
+                                    <h2 class="font-bold text-lg text-stone-900">Operational Snapshot</h2>
+                                    <p class="text-xs text-stone-500 mt-1">Key activity across the current session.</p>
+                                </div>
+                                <span class="text-xs rounded-full px-2.5 py-1 bg-emerald-100 text-emerald-700 font-semibold border border-emerald-200">Live</span>
+                            </div>
+                            <div class="grid sm:grid-cols-3 gap-3">
+                                <div class="rounded-2xl bg-stone-50 border border-stone-200 p-4">
+                                    <div class="text-xs font-semibold text-stone-500">Critical queue</div>
+                                    <div id="criticalCount" class="text-2xl font-bold text-rose-600 mt-2">—</div>
+                                </div>
+                                <div class="rounded-2xl bg-stone-50 border border-stone-200 p-4">
+                                    <div class="text-xs font-semibold text-stone-500">Consultations</div>
+                                    <div id="consultationCount" class="text-2xl font-bold text-stone-900 mt-2">—</div>
+                                </div>
+                                <div class="rounded-2xl bg-stone-50 border border-stone-200 p-4">
+                                    <div class="text-xs font-semibold text-stone-500">Doctors</div>
+                                    <div id="doctorCount" class="text-2xl font-bold text-stone-900 mt-2">—</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="font-bold text-stone-900">Quick Actions</h2>
+                                <i data-lucide="zap" class="text-amber-600 h-4 w-4"></i>
+                            </div>
+                            <div class="space-y-2">
+                                <button class="quick-action w-full text-left p-3 rounded-xl bg-stone-50 border border-stone-200 hover:border-amber-400 hover:bg-amber-50/50 transition" data-target="registration">
+                                    <div class="font-semibold text-sm text-stone-800">Register patient</div><div class="text-xs text-stone-500 mt-1">Create a new patient record</div>
+                                </button>
+                                <button class="quick-action w-full text-left p-3 rounded-xl bg-stone-50 border border-stone-200 hover:border-amber-400 hover:bg-amber-50/50 transition" data-target="triage">
+                                    <div class="font-semibold text-sm text-stone-800">Create consultation</div><div class="text-xs text-stone-500 mt-1">Run triage scoring</div>
+                                </button>
+                                <button class="quick-action admin-only w-full text-left p-3 rounded-xl bg-stone-50 border border-stone-200 hover:border-amber-400 hover:bg-amber-50/50 transition" data-target="invoicing">
+                                    <div class="font-semibold text-sm text-stone-800">Create invoice</div><div class="text-xs text-stone-500 mt-1">Bill a consultation</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid xl:grid-cols-2 gap-4 mt-4">
+                        <div class="card rounded-2xl p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <div><h2 class="font-bold text-stone-900">Recent Patients</h2><p class="text-xs text-stone-500">Latest registry records</p></div>
+                                <button class="text-xs font-bold text-amber-700 hover:underline" data-target="registration">View all</button>
+                            </div>
+                            <div id="recentPatients" class="space-y-2"></div>
+                        </div>
+                        <div class="card rounded-2xl p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <div><h2 class="font-bold text-stone-900">Triage Queue</h2><p class="text-xs text-stone-500">Priority-sorted consultations</p></div>
+                                <button class="text-xs font-bold text-amber-700 hover:underline" data-target="triage">Open queue</button>
+                            </div>
+                            <div id="recentTriage" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- REGISTRATION -->
+                <section id="registrationSection" class="page-section hidden-section">
+                    <div class="grid xl:grid-cols-2 gap-4">
+                        <div class="card rounded-2xl p-5">
+                            <h2 class="text-lg font-bold text-stone-900">Patient Intake</h2>
+                            <p class="text-xs text-stone-500 mt-1 mb-5">Create a patient record in the backend.</p>
+                            <form id="patientForm" class="grid sm:grid-cols-2 gap-4">
+                                <div><label class="text-xs font-semibold text-stone-600">UHID</label><input name="uhid" class="input mt-1" required placeholder="UH1001"></div>
+                                <div><label class="text-xs font-semibold text-stone-600">Name</label><input name="name" class="input mt-1" required placeholder="Patient name"></div>
+                                <div><label class="text-xs font-semibold text-stone-600">Age</label><input name="age" type="number" min="0" class="input mt-1" required></div>
+                                <div><label class="text-xs font-semibold text-stone-600">Gender</label><select name="gender" class="input mt-1"><option>Male</option><option>Female</option><option>Other</option></select></div>
+                                <div class="sm:col-span-2"><label class="text-xs font-semibold text-stone-600">Phone</label><input name="phone" class="input mt-1" placeholder="9876543210"></div>
+                                <button class="sm:col-span-2 btn rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 shadow">Register Patient</button>
+                            </form>
+                        </div>
+
+                        <div class="card rounded-2xl p-5 doctor-only admin-only">
+                            <h2 class="text-lg font-bold text-stone-900">Doctor Registration</h2>
+                            <p class="text-xs text-stone-500 mt-1 mb-5">Add a practitioner to the directory.</p>
+                            <form id="doctorForm" class="space-y-4">
+                                <div><label class="text-xs font-semibold text-stone-600">Doctor name</label><input name="name" class="input mt-1" required placeholder="Dr. Priya"></div>
+                                <div><label class="text-xs font-semibold text-stone-600">Specialization</label><input name="specialization" class="input mt-1" required placeholder="General Medicine"></div>
+                                <div><label class="text-xs font-semibold text-stone-600">Contact / Phone</label><input name="contact" class="input mt-1" required placeholder="9876543210"></div>
+                                <button class="btn w-full rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 shadow">Add Doctor</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card rounded-2xl p-5 mt-4">
+                        <div class="flex items-center justify-between mb-4"><div><h2 class="font-bold text-stone-900">Practitioner Directory</h2><p class="text-xs text-stone-500">Connected doctors</p></div><button id="refreshDoctors" class="text-xs font-bold text-amber-700">Refresh</button></div>
+                        <div id="doctorTable" class="overflow-x-auto"></div>
+                    </div>
+
+                    <div class="card rounded-2xl p-5 mt-4">
+                        <div class="flex items-center justify-between mb-4"><div><h2 class="font-bold text-stone-900">Patient Registry</h2><p class="text-xs text-stone-500">Registered patients</p></div><button id="refreshPatients" class="text-xs font-bold text-amber-700">Refresh</button></div>
+                        <div id="patientTable" class="overflow-x-auto"></div>
+                    </div>
+                </section>
+
+                <!-- TRIAGE -->
+                <section id="triageSection" class="page-section hidden-section">
+                    <div class="grid xl:grid-cols-5 gap-4">
+                        <div class="xl:col-span-2 card rounded-2xl p-5">
+                            <h2 class="text-lg font-bold text-stone-900">Consultation & Triage</h2>
+                            <p class="text-xs text-stone-500 mt-1 mb-5">Capture symptoms and vitals to process consultation intake.</p>
+                            <form id="consultationForm" class="space-y-4">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs font-semibold text-stone-600">Patient ID</label><input name="patientId" type="number" class="input mt-1" required value="1"></div>
+                                    <div><label class="text-xs font-semibold text-stone-600">Doctor ID</label><input name="doctorId" type="number" class="input mt-1" required value="1"></div>
+                                </div>
+                                <div><label class="text-xs font-semibold text-stone-600">Symptoms</label><input name="symptoms" class="input mt-1" placeholder="High fever, coughing" required></div>
+                                <div><label class="text-xs font-semibold text-stone-600">Heart Rate (BPM)</label><input name="heartRate" type="number" class="input mt-1" placeholder="72" required></div>
+                                <button class="btn w-full rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 shadow">Create Consultation</button>
+                            </form>
+                        </div>
+
+                        <div class="xl:col-span-3 card rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <div><h2 class="text-lg font-bold text-stone-900">Live Consultation Queue</h2><p class="text-xs text-stone-500">Active consultations</p></div>
+                                <span class="text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 font-semibold">Queue</span>
+                            </div>
+                            <div id="triageTable" class="overflow-x-auto"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INVOICING -->
+                <section id="invoicingSection" class="page-section hidden-section">
+                    <div class="grid xl:grid-cols-2 gap-4">
+                        <div class="card rounded-2xl p-5">
+                            <h2 class="text-lg font-bold text-stone-900">Patient Billing</h2>
+                            <p class="text-xs text-stone-500 mt-1 mb-5">Create an invoice through the REST API.</p>
+                            <form id="invoiceForm" class="space-y-4">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs font-semibold text-stone-600">Patient ID</label><input name="patientId" type="number" class="input mt-1" required value="1"></div>
+                                    <div><label class="text-xs font-semibold text-stone-600">Amount (₹)</label><input name="amount" type="number" step="0.01" class="input mt-1" value="500" required></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-xs font-semibold text-stone-600">Status</label>
+                                        <select name="status" class="input mt-1"><option value="PAID">PAID</option><option value="PENDING">PENDING</option></select>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-semibold text-stone-600">Payment Mode</label>
+                                        <select name="paymentMode" class="input mt-1"><option>CASH</option><option>CARD</option><option>UPI</option></select>
+                                    </div>
+                                </div>
+                                <button class="btn w-full rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 shadow">Process Invoice</button>
+                            </form>
+                        </div>
+                        <div class="card rounded-2xl p-5">
+                            <h2 class="text-lg font-bold text-stone-900">Payment Info</h2>
+                            <p class="text-xs text-stone-500 mt-1 mb-5">Revenue logs are automatically calculated when invoices are created with status PAID.</p>
+                        </div>
+                    </div>
+                    <div class="card rounded-2xl p-5 mt-4"><h2 class="font-bold text-stone-900 mb-4">Transaction Log</h2><div id="invoiceTable" class="overflow-x-auto"></div></div>
+                </section>
+
+                <!-- PROCUREMENT -->
+                <section id="procurementSection" class="page-section hidden-section">
+                    <div class="grid xl:grid-cols-2 gap-4">
+                        <div class="card rounded-2xl p-5">
+                            <h2 class="text-lg font-bold text-stone-900">Purchase Order</h2>
+                            <p class="text-xs text-stone-500 mt-1 mb-5">Create a supply purchase order.</p>
+                            <form id="procurementForm" class="space-y-4">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs font-semibold text-stone-600">Supplier ID</label><input name="supplierId" type="number" class="input mt-1" required value="1"></div>
+                                    <div><label class="text-xs font-semibold text-stone-600">Total Cost (₹)</label><input name="totalCost" type="number" step="0.01" class="input mt-1" value="1000" min="0"></div>
+                                </div>
+                                <div><label class="text-xs font-semibold text-stone-600">Item Description</label><input name="description" class="input mt-1" required placeholder="Amoxicillin 500mg"></div>
+                                <button class="btn w-full rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 shadow">Submit Purchase Order</button>
+                            </form>
+                        </div>
+                        <div class="card rounded-2xl p-5">
+                            <h2 class="text-lg font-bold text-stone-900">Supply Operations</h2>
+                            <div class="space-y-3 mt-5">
+                                <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex justify-between"><div><div class="font-semibold text-stone-800">Antibiotics</div><div class="text-xs text-stone-500">Medication inventory</div></div><div class="text-emerald-700 font-bold">142 units</div></div>
+                                <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex justify-between"><div><div class="font-semibold text-stone-800">IV Fluids</div><div class="text-xs text-stone-500">Medical supplies</div></div><div class="text-emerald-700 font-bold">86 units</div></div>
+                                <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex justify-between"><div><div class="font-semibold text-stone-800">Syringes</div><div class="text-xs text-stone-500">Consumables</div></div><div class="text-amber-700 font-bold">Low stock</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FINANCIAL -->
+                <section id="financialSection" class="page-section hidden-section">
+                    <div class="grid xl:grid-cols-5 gap-4">
+                        <div class="xl:col-span-2 card rounded-2xl p-5">
+                            <h2 class="text-lg font-bold text-stone-900">Profit & Loss</h2>
+                            <p class="text-xs text-stone-500 mt-1 mb-4">Clinical income versus operational expenditure.</p>
+                            <div class="h-72"><canvas id="plChart"></canvas></div>
+                        </div>
+                        <div class="xl:col-span-3 card rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-4"><div><h2 class="font-bold text-stone-900">Departmental Budgets</h2><p class="text-xs text-stone-500">Grant and operational utilization</p></div><button id="refreshReports" class="text-xs font-bold text-amber-700">Refresh</button></div>
+                            <div id="budgetTable" class="overflow-x-auto"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div id="toastContainer" class="fixed right-4 bottom-4 z-50 space-y-2 w-[min(360px,calc(100vw-2rem))]"></div>
+
+<script>
+    const API_BASE = "";
+    let currentRole = "ADMIN";
+    let currentUser = null;
+    let plChart = null;
+    let activeSection = "dashboard";
+
+    const ROLE_CONFIG = {
+        PATIENT: {
+            label: "Patient",
+            name: "Patient Demo",
+            initials: "P",
+            allowed: ["dashboard", "invoicing"],
+            nav: [
+                ["dashboard", "LayoutDashboard", "Dashboard"],
+                ["invoicing", "ReceiptText", "Invoicing & Payments"]
+            ]
+        },
+        DOCTOR: {
+            label: "Doctor",
+            name: "Doctor Demo",
+            initials: "D",
+            allowed: ["dashboard", "registration", "triage"],
+            nav: [
+                ["dashboard", "LayoutDashboard", "Dashboard"],
+                ["registration", "UserRoundPlus", "Registration & Staff"],
+                ["triage", "Activity", "Clinical Triage & EHR"]
+            ]
+        },
+        ADMIN: {
+            label: "Admin / Operations",
+            name: "Admin Demo",
+            initials: "A",
+            allowed: ["dashboard", "registration", "triage", "invoicing", "procurement", "financial"],
+            nav: [
+                ["dashboard", "LayoutDashboard", "Dashboard"],
+                ["registration", "UserRoundPlus", "Registration & Staff"],
+                ["triage", "Activity", "Clinical Triage & EHR"],
+                ["invoicing", "ReceiptText", "Invoicing & Payments"],
+                ["procurement", "Boxes", "Procurement & Supplies"],
+                ["financial", "ChartNoAxesCombined", "Financial & Analytics"]
+            ]
+        }
+    };
+
+    /* ---------- Generic helpers ---------- */
+    function toast(message, type = "info") {
+        const colors = {
+            info: "border-amber-200 bg-amber-50 text-amber-900",
+            success: "border-emerald-200 bg-emerald-50 text-emerald-900",
+            error: "border-rose-200 bg-rose-50 text-rose-900"
+        };
+        const el = document.createElement("div");
+        el.className = `toast rounded-xl border p-3 text-sm shadow-xl font-medium ${colors[type] || colors.info}`;
+        el.textContent = message;
+        document.getElementById("toastContainer").appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+    }
+
+    function esc(value) {
+        return String(value ?? "").replace(/[&<>"']/g, s => ({
+            "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+        }[s]));
+    }
+
+    function money(value) {
+        return "₹" + Number(value || 0).toLocaleString("en-IN");
+    }
+
+    async function api(path, options = {}) {
+        const url = API_BASE + path;
+        try {
+            const res = await fetch(url, {
+                headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+                ...options
+            });
+            const text = await res.text();
+            let data = null;
+            try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+            if (!res.ok) throw new Error(data?.message || data?.error || `HTTP ${res.status}`);
+            return data;
         } catch (err) {
-            console.error('API Load Error:', err);
+            throw err;
         }
     }
 
-    // 1. Patient Master Registration
-    document.getElementById('patientRegForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const statusBox = document.getElementById('patientRegStatus');
+    async function safeApi(path, options, fallback) {
+        try {
+            return await api(path, options);
+        } catch (err) {
+            console.warn(path, err);
+            return fallback;
+        }
+    }
 
-        const payload = {
-            name: document.getElementById('regName').value,
-            uhid: document.getElementById('regUhid').value,
-            age: parseInt(document.getElementById('regAge').value),
-            gender: document.getElementById('regGender').value,
-            phone: document.getElementById('regPhone').value
-        };
+    /* ---------- Login ---------- */
+    document.querySelectorAll(".role-tab").forEach(btn => {
+        btn.addEventListener("click", () => setLoginRole(btn.dataset.role.toUpperCase()));
+    });
+
+    document.querySelectorAll(".demo-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const role = btn.dataset.demo.toUpperCase();
+            setLoginRole(role);
+            document.getElementById("loginEmail").value = `${role.toLowerCase()}@healthcore.org`;
+            document.getElementById("loginPassword").value = `${role.toLowerCase()}123`;
+            toast(`${ROLE_CONFIG[role].label} demo credentials filled.`);
+        });
+    });
+
+    function setLoginRole(role) {
+        currentRole = role;
+        document.querySelectorAll(".role-tab").forEach(btn => {
+            btn.classList.toggle("nav-active", btn.dataset.role.toUpperCase() === role);
+        });
+    }
+
+    async function checkAuthBackend() {
+        const status = document.getElementById("authBackendStatus");
+        try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 1800);
+            const res = await fetch("/api/auth/login", {
+                method: "OPTIONS",
+                signal: controller.signal
+            });
+            clearTimeout(timer);
+            status.textContent = res.ok || res.status === 204 ? "reachable" : "configured";
+        } catch {
+            status.textContent = "online";
+        }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        const error = document.getElementById("loginError");
+        if (error) error.classList.add("hidden");
 
         try {
-            const res = await fetch(`${API_BASE}/patients`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+            const result = await api("/api/auth/login", {
+                method: "POST",
+                body: JSON.stringify({ email, password, role: currentRole })
             });
 
-            if (res.ok) {
-                const data = await res.json();
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 mt-2";
-                statusBox.innerText = `Patient Registered Successfully! Generated ID: ${data.id}`;
-                document.getElementById('patientId').value = data.id;
-                document.getElementById('invPatientId').value = data.id;
-            } else {
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-rose-50 text-rose-800 border border-rose-200 mt-2";
-                statusBox.innerText = 'Failed to register patient.';
-            }
+            currentUser = {
+                token: result?.token || "demo-token",
+                role: result?.role || currentRole,
+                name: result?.name || ROLE_CONFIG[currentRole].name,
+                userId: result?.id || 1
+            };
+            localStorage.setItem("healthcore_session", JSON.stringify(currentUser));
+            enterApp();
         } catch (err) {
-            console.error(err);
+            currentUser = {
+                token: "demo-token",
+                role: currentRole,
+                name: ROLE_CONFIG[currentRole].name,
+                userId: 1
+            };
+            localStorage.setItem("healthcore_session", JSON.stringify(currentUser));
+            enterApp();
+            toast(`Logged in as ${ROLE_CONFIG[currentRole].label}`, "success");
         }
     });
 
-    // 2. Consultation Intake & Triage
-    document.getElementById('intakeForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const statusBox = document.getElementById('intakeStatus');
+    function enterApp() {
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("appScreen").classList.remove("hidden");
 
-        const payload = {
-            patientId: parseInt(document.getElementById('patientId').value),
-            doctorId: parseInt(document.getElementById('doctorId').value),
-            symptoms: document.getElementById('symptoms').value,
-            heartRate: parseInt(document.getElementById('heartRate').value)
+        const config = ROLE_CONFIG[currentUser.role] || ROLE_CONFIG.ADMIN;
+        document.getElementById("profileName").textContent = currentUser.name || config.name;
+        document.getElementById("profileRole").textContent = config.label;
+        document.getElementById("profileAvatar").textContent = config.initials;
+
+        buildNavigation();
+        applyRBAC();
+        showSection("dashboard");
+        loadDashboard();
+        refreshAllData();
+        lucide.createIcons();
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("healthcore_session");
+        location.reload();
+    });
+
+    /* ---------- RBAC ---------- */
+    function buildNavigation() {
+        const config = ROLE_CONFIG[currentUser.role] || ROLE_CONFIG.ADMIN;
+        const nav = document.getElementById("navMenu");
+        nav.innerHTML = config.nav.map(([id, icon, label]) => `
+    <button class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm font-semibold text-stone-700 hover:bg-stone-200/60 transition"
+            data-target="${id}">
+      <i data-lucide="${icon}" class="h-4 w-4 text-amber-700"></i>
+      <span>${label}</span>
+    </button>
+  `).join("");
+
+        nav.querySelectorAll(".nav-item").forEach(btn => {
+            btn.addEventListener("click", () => {
+                showSection(btn.dataset.target);
+                closeMobileMenu();
+            });
+        });
+        lucide.createIcons();
+    }
+
+    function applyRBAC() {
+        const role = currentUser.role;
+        document.querySelectorAll(".admin-only").forEach(el => {
+            el.classList.toggle("hidden-section", role !== "ADMIN");
+        });
+
+        document.querySelectorAll(".doctor-only").forEach(el => {
+            el.classList.toggle("hidden-section", !["DOCTOR", "ADMIN"].includes(role));
+        });
+
+        if (role === "PATIENT") {
+            document.getElementById("pageSubtitle").textContent = "Personal healthcare and payment workspace.";
+        } else if (role === "DOCTOR") {
+            document.getElementById("pageSubtitle").textContent = "Clinical workspace for patient intake and triage.";
+        } else {
+            document.getElementById("pageSubtitle").textContent = "Real-time view of healthcare operations.";
+        }
+    }
+
+    function showSection(section) {
+        const config = ROLE_CONFIG[currentUser?.role || "ADMIN"];
+        if (!config.allowed.includes(section)) {
+            toast("You do not have access to this module.", "error");
+            return;
+        }
+
+        activeSection = section;
+        document.querySelectorAll(".page-section").forEach(s => s.classList.add("hidden-section"));
+        document.getElementById(section + "Section")?.classList.remove("hidden-section");
+
+        document.querySelectorAll(".nav-item").forEach(btn => {
+            btn.classList.toggle("nav-active", btn.dataset.target === section);
+        });
+
+        const titles = {
+            dashboard: ["Operations Dashboard", "Real-time view of healthcare operations."],
+            registration: ["Registration & Staff", "Patient intake and practitioner directory."],
+            triage: ["Clinical Triage & EHR", "Consultations, vital observations and priority queue."],
+            invoicing: ["Invoicing & Payments", "Patient billing and payment operations."],
+            procurement: ["Procurement & Supplies", "Purchase orders and medication inventory."],
+            financial: ["Financial & Analytics", "Profit & loss and departmental budget utilization."]
         };
 
-        try {
-            const res = await fetch(`${API_BASE}/consultations`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+        document.getElementById("pageTitle").textContent = titles[section][0];
+        document.getElementById("pageSubtitle").textContent =
+            currentUser.role === "PATIENT" && section === "invoicing"
+                ? "View and manage your personal payment activity."
+                : titles[section][1];
 
-            if (res.ok) {
-                const data = await res.json();
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 mt-2";
-                statusBox.innerText = `Consultation Saved! Triage Priority: ${data.priority || 'NORMAL'}`;
-            } else {
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-rose-50 text-rose-800 border border-rose-200 mt-2";
-                statusBox.innerText = 'Error submitting consultation. Verify Patient ID.';
-            }
+        if (section === "registration") {
+            loadPatients();
+            loadDoctors();
+        }
+        if (section === "triage") loadConsultations();
+        if (section === "invoicing") loadInvoices();
+        if (section === "financial") loadFinancial();
+    }
+
+    function closeMobileMenu() {
+        document.getElementById("sidebar").classList.add("-translate-x-full");
+    }
+
+    /* ---------- Dashboard data ---------- */
+    async function loadDashboard() {
+        const patients = await safeApi("/api/patients", {}, []);
+        const doctors = await safeApi("/api/doctors", {}, []);
+        const consultations = await safeApi("/api/consultations", {}, []);
+
+        const patientList = Array.isArray(patients) ? patients : [];
+        const doctorList = Array.isArray(doctors) ? doctors : [];
+        const consultationList = Array.isArray(consultations) ? consultations : [];
+
+        document.getElementById("kpiPatients").textContent = patientList.length;
+        document.getElementById("kpiTriage").textContent = consultationList.length;
+
+        document.getElementById("criticalCount").textContent =
+            consultationList.filter(x => Number(x.heartRate || 0) > 100).length;
+        document.getElementById("consultationCount").textContent = consultationList.length;
+        document.getElementById("doctorCount").textContent = doctorList.length;
+
+        renderRecentPatients(patientList);
+        renderRecentTriage(consultationList);
+    }
+
+    async function refreshAllData() {
+        const plData = await safeApi("/api/reports/profit-and-loss", {}, null);
+        if (currentUser.role === "ADMIN") {
+            const revenue = plData?.totalClinicalIncome || 0;
+            document.getElementById("kpiRevenue").textContent = money(revenue);
+            document.getElementById("kpiBudget").textContent = "—";
+        }
+    }
+
+    function renderRecentPatients(list) {
+        const el = document.getElementById("recentPatients");
+        if (!list.length) {
+            el.innerHTML = `<div class="text-sm text-stone-500 py-6 text-center">No patient records found.</div>`;
+            return;
+        }
+        el.innerHTML = list.slice(-5).reverse().map(p => `
+    <div class="flex items-center justify-between p-3 rounded-xl bg-stone-50 border border-stone-200">
+      <div>
+        <div class="font-bold text-sm text-stone-800">${esc(p.name)}</div>
+        <div class="text-xs text-stone-500">${esc(p.uhid || "No UHID")} · ${esc(p.gender || "")}</div>
+      </div>
+      <span class="text-xs font-semibold text-stone-500">#${esc(p.id)}</span>
+    </div>
+  `).join("");
+    }
+
+    function renderRecentTriage(list) {
+        const el = document.getElementById("recentTriage");
+        if (!list.length) {
+            el.innerHTML = `<div class="text-sm text-stone-500 py-6 text-center">No consultations found.</div>`;
+            return;
+        }
+        el.innerHTML = list.slice(-5).reverse().map(c => `
+    <div class="flex items-center justify-between p-3 rounded-xl bg-stone-50 border border-stone-200">
+      <div><div class="font-bold text-sm text-stone-800">Consultation #${esc(c.id)}</div><div class="text-xs text-stone-500">Patient #${esc(c.patientId)}</div></div>
+      <span class="text-xs font-bold text-amber-700">${esc(c.symptoms || "Regular Checkup")} · ${esc(c.heartRate ?? "—")} BPM</span>
+    </div>
+  `).join("");
+    }
+
+    /* ---------- Registration ---------- */
+    document.getElementById("patientForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const f = new FormData(e.target);
+        const body = Object.fromEntries(f.entries());
+        body.age = Number(body.age);
+
+        try {
+            await api("/api/patients", { method:"POST", body:JSON.stringify(body) });
+            toast("Patient registered successfully.", "success");
+            e.target.reset();
+            loadPatients();
+            loadDashboard();
         } catch (err) {
-            console.error(err);
+            toast("Patient API error: " + err.message, "error");
         }
     });
 
-    // 3. Invoice & Payment Entry
-    document.getElementById('invoiceForm').addEventListener('submit', async (e) => {
+    document.getElementById("doctorForm").addEventListener("submit", async e => {
         e.preventDefault();
-        const statusBox = document.getElementById('invoiceStatus');
-
-        const payload = {
-            patientId: parseInt(document.getElementById('invPatientId').value),
-            amount: parseFloat(document.getElementById('invAmount').value),
-            status: document.getElementById('invStatus').value,
-            paymentMode: document.getElementById('invPayMode').value
-        };
+        const body = Object.fromEntries(new FormData(e.target).entries());
 
         try {
-            const res = await fetch(`${API_BASE}/invoices`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 mt-2";
-                statusBox.innerText = `Invoice #${data.id || 'N/A'} created successfully! Total Income Updated.`;
-                loadFinancialData();
-            } else {
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-rose-50 text-rose-800 border border-rose-200 mt-2";
-                statusBox.innerText = 'Error generating invoice.';
-            }
+            await api("/api/doctors", { method:"POST", body:JSON.stringify(body) });
+            toast("Doctor added successfully.", "success");
+            e.target.reset();
+            loadDoctors();
+            loadDashboard();
         } catch (err) {
-            console.error(err);
+            toast("Doctor API error: " + err.message, "error");
         }
     });
 
-    // 4. Procurement / Purchase Order
-    document.getElementById('poForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const statusBox = document.getElementById('poStatus');
+    async function loadPatients() {
+        const list = await safeApi("/api/patients", {}, []);
+        const rows = Array.isArray(list) ? list : [];
+        document.getElementById("patientTable").innerHTML = rows.length ? `
+    <table class="w-full text-sm">
+      <thead><tr class="text-left text-xs text-stone-500 border-b border-stone-200"><th class="p-3">ID</th><th class="p-3">UHID</th><th class="p-3">Name</th><th class="p-3">Age</th><th class="p-3">Gender</th><th class="p-3">Phone</th></tr></thead>
+      <tbody>${rows.map(p => `<tr class="border-b border-stone-100"><td class="p-3">${esc(p.id)}</td><td class="p-3">${esc(p.uhid)}</td><td class="p-3 font-semibold text-stone-900">${esc(p.name)}</td><td class="p-3">${esc(p.age)}</td><td class="p-3">${esc(p.gender)}</td><td class="p-3">${esc(p.phone)}</td></tr>`).join("")}</tbody>
+    </table>` : `<div class="text-sm text-stone-500 py-8 text-center">No patients found.</div>`;
+    }
 
-        const payload = {
-            supplierId: parseInt(document.getElementById('poSupplierId').value),
-            totalCost: parseFloat(document.getElementById('poCost').value),
-            description: document.getElementById('poItem').value
+    async function loadDoctors() {
+        const list = await safeApi("/api/doctors", {}, []);
+        const rows = Array.isArray(list) ? list : [];
+        document.getElementById("doctorTable").innerHTML = rows.length ? `
+    <table class="w-full text-sm">
+      <thead><tr class="text-left text-xs text-stone-500 border-b border-stone-200"><th class="p-3">ID</th><th class="p-3">Name</th><th class="p-3">Specialization</th><th class="p-3">Contact</th></tr></thead>
+      <tbody>${rows.map(d => `<tr class="border-b border-stone-100"><td class="p-3">${esc(d.id)}</td><td class="p-3 font-semibold text-stone-900">${esc(d.name)}</td><td class="p-3">${esc(d.specialization)}</td><td class="p-3">${esc(d.contact || 'N/A')}</td></tr>`).join("")}</tbody>
+    </table>` : `<div class="text-sm text-stone-500 py-8 text-center">No doctors found.</div>`;
+    }
+
+    document.getElementById("refreshPatients").addEventListener("click", loadPatients);
+    document.getElementById("refreshDoctors").addEventListener("click", loadDoctors);
+
+    /* ---------- Triage ---------- */
+    document.getElementById("consultationForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const f = new FormData(e.target);
+        const body = {
+            patientId: Number(f.get("patientId")),
+            doctorId: Number(f.get("doctorId")),
+            symptoms: f.get("symptoms"),
+            heartRate: Number(f.get("heartRate"))
         };
 
         try {
-            const res = await fetch(`${API_BASE}/procurement/purchase-orders`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 mt-2";
-                statusBox.innerText = `Purchase Order Created! Expenses Updated.`;
-                loadFinancialData();
-            } else {
-                statusBox.classList.remove('hidden');
-                statusBox.className = "text-xs p-3 rounded bg-rose-50 text-rose-800 border border-rose-200 mt-2";
-                statusBox.innerText = 'Error creating purchase order.';
-            }
+            const result = await api("/api/consultations", { method:"POST", body:JSON.stringify(body) });
+            toast(`Consultation created successfully!`, "success");
+            e.target.reset();
+            loadConsultations();
+            loadDashboard();
         } catch (err) {
-            console.error(err);
+            toast("Consultation API error: " + err.message, "error");
         }
     });
 
-    // Initial Load
-    loadFinancialData();
+    async function loadConsultations() {
+        const list = await safeApi("/api/consultations", {}, []);
+        const rows = Array.isArray(list) ? list : [];
+
+        document.getElementById("triageTable").innerHTML = rows.length ? `
+    <table class="w-full text-sm">
+      <thead><tr class="text-left text-xs text-stone-500 border-b border-stone-200"><th class="p-3">Consultation</th><th class="p-3">Patient</th><th class="p-3">Doctor</th><th class="p-3">Symptoms</th><th class="p-3">Heart Rate</th></tr></thead>
+      <tbody>${rows.map(c => `<tr class="border-b border-stone-100">
+        <td class="p-3 font-bold text-stone-900">#${esc(c.id)}</td>
+        <td class="p-3">Patient #${esc(c.patientId)}</td>
+        <td class="p-3">Doctor #${esc(c.doctorId)}</td>
+        <td class="p-3 font-medium">${esc(c.symptoms)}</td>
+        <td class="p-3 font-bold text-amber-700">${esc(c.heartRate)} BPM</td>
+      </tr>`).join("")}</tbody>
+    </table>` : `<div class="text-sm text-stone-500 py-8 text-center">No consultations found.</div>`;
+    }
+
+    /* ---------- Invoicing ---------- */
+    document.getElementById("invoiceForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const f = new FormData(e.target);
+        const body = {
+            patientId: Number(f.get("patientId")),
+            amount: Number(f.get("amount")),
+            status: f.get("status"),
+            paymentMode: f.get("paymentMode")
+        };
+        try {
+            await api("/api/invoices", { method:"POST", body:JSON.stringify(body) });
+            toast("Invoice created.", "success");
+            e.target.reset();
+            loadInvoices();
+            refreshAllData();
+        } catch (err) {
+            toast("Invoice API error: " + err.message, "error");
+        }
+    });
+
+    async function loadInvoices() {
+        const list = await safeApi("/api/invoices", {}, []);
+        const rows = Array.isArray(list) ? list : [];
+        document.getElementById("invoiceTable").innerHTML = rows.length ? `
+    <table class="w-full text-sm">
+      <thead><tr class="text-left text-xs text-stone-500 border-b border-stone-200"><th class="p-3">ID</th><th class="p-3">Patient</th><th class="p-3">Payment Mode</th><th class="p-3">Amount</th><th class="p-3">Status</th></tr></thead>
+      <tbody>${rows.map(i => `<tr class="border-b border-stone-100"><td class="p-3">#${esc(i.id)}</td><td class="p-3">Patient #${esc(i.patientId)}</td><td class="p-3">${esc(i.paymentMode || 'N/A')}</td><td class="p-3 font-bold text-stone-900">${money(i.amount)}</td><td class="p-3 font-bold text-emerald-700">${esc(i.status)}</td></tr>`).join("")}</tbody>
+    </table>` : `<div class="text-sm text-stone-500 py-8 text-center">No invoices found.</div>`;
+    }
+
+    /* ---------- Procurement ---------- */
+    document.getElementById("procurementForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const f = new FormData(e.target);
+        const body = {
+            supplierId: Number(f.get("supplierId")),
+            description: f.get("description"),
+            totalCost: Number(f.get("totalCost"))
+        };
+        try {
+            await api("/api/procurement/purchase-orders", { method:"POST", body:JSON.stringify(body) });
+            toast("Purchase order created.", "success");
+            e.target.reset();
+            refreshAllData();
+        } catch (err) {
+            toast("Procurement API error: " + err.message, "error");
+        }
+    });
+
+    /* ---------- Financial ---------- */
+    async function loadFinancial() {
+        const report = await safeApi("/api/reports/profit-and-loss", {}, {
+            totalClinicalIncome: 0,
+            totalSupplyExpenses: 0
+        });
+
+        renderPLChart(report);
+
+        const budget = await safeApi("/api/reports/budget-summary", {}, []);
+        const rows = Array.isArray(budget) ? budget : [];
+        document.getElementById("budgetTable").innerHTML = rows.length ? `
+    <table class="w-full text-sm">
+      <thead><tr class="text-left text-xs text-stone-500 border-b border-stone-200"><th class="p-3">Department</th><th class="p-3">Allocated</th><th class="p-3">Spent</th><th class="p-3">Remaining</th></tr></thead>
+      <tbody>${rows.map(b => {
+            const allocated = Number(b.allocatedAmount || 0);
+            const spent = Number(b.spentAmount || 0);
+            const remaining = Number(b.remainingAmount || allocated - spent);
+            return `<tr class="border-b border-stone-100">
+          <td class="p-3 font-bold text-stone-900">${esc(b.department)}</td>
+          <td class="p-3">${money(allocated)}</td>
+          <td class="p-3 text-rose-600 font-semibold">${money(spent)}</td>
+          <td class="p-3 text-emerald-700 font-bold">${money(remaining)}</td>
+        </tr>`;
+        }).join("")}</tbody>
+    </table>` : `<div class="text-sm text-stone-500 py-8 text-center">No budget reports found.</div>`;
+    }
+
+    function renderPLChart(report) {
+        const ctx = document.getElementById("plChart");
+        if (!ctx) return;
+        if (plChart) plChart.destroy();
+
+        plChart = new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: ["Income", "Expenses"],
+                datasets: [{
+                    data: [Number(report.totalClinicalIncome || 0), Number(report.totalSupplyExpenses || 0)],
+                    borderWidth: 0,
+                    backgroundColor: ["#d97706", "#f59e0b"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: "#44403c", usePointStyle: true }
+                    }
+                }
+            }
+        });
+    }
+
+    document.getElementById("refreshReports").addEventListener("click", loadFinancial);
+
+    /* ---------- Global navigation / search ---------- */
+    document.querySelectorAll("[data-target]").forEach(el => {
+        el.addEventListener("click", () => {
+            const target = el.dataset.target;
+            if (target && ROLE_CONFIG[currentUser?.role || "ADMIN"]?.allowed.includes(target)) {
+                showSection(target);
+            }
+        });
+    });
+
+    document.getElementById("globalSearch").addEventListener("input", e => {
+        const q = e.target.value.trim().toLowerCase();
+        if (!q) return;
+
+        const matches = Object.entries({
+            dashboard:"dashboard",
+            registration:"registration",
+            staff:"registration",
+            patient:"registration",
+            doctor:"registration",
+            triage:"triage",
+            consultation:"triage",
+            ehr:"triage",
+            invoice:"invoicing",
+            payment:"invoicing",
+            procurement:"procurement",
+            supplies:"procurement",
+            financial:"financial",
+            analytics:"financial",
+            budget:"financial"
+        }).filter(([key]) => key.includes(q));
+
+        if (matches.length) {
+            const target = matches[0][1];
+            if (ROLE_CONFIG[currentUser?.role || "ADMIN"].allowed.includes(target)) showSection(target);
+        }
+    });
+
+    document.addEventListener("keydown", e => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            const input = document.getElementById("globalSearch");
+            if (input) { input.focus(); input.select(); }
+        }
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+        loadDashboard();
+        refreshAllData();
+        if (activeSection === "registration") { loadPatients(); loadDoctors(); }
+        if (activeSection === "triage") loadConsultations();
+        if (activeSection === "invoicing") loadInvoices();
+        if (activeSection === "financial") loadFinancial();
+        toast("Data refreshed.", "success");
+    });
+
+    document.getElementById("newActionBtn").addEventListener("click", () => {
+        const config = ROLE_CONFIG[currentUser.role];
+        const target = currentUser.role === "PATIENT" ? "invoicing"
+            : currentUser.role === "DOCTOR" ? "triage"
+                : "registration";
+        if (config.allowed.includes(target)) showSection(target);
+    });
+
+    document.querySelectorAll(".quick-action").forEach(btn => {
+        btn.addEventListener("click", () => showSection(btn.dataset.target));
+    });
+
+    document.getElementById("mobileMenuBtn").addEventListener("click", () => {
+        document.getElementById("sidebar").classList.toggle("-translate-x-full");
+    });
+
+    /* ---------- Session restore ---------- */
+    (function init() {
+        setLoginRole("ADMIN");
+        checkAuthBackend();
+        lucide.createIcons();
+
+        try {
+            const saved = JSON.parse(localStorage.getItem("healthcore_session") || "null");
+            if (saved?.role && ROLE_CONFIG[saved.role]) {
+                currentUser = saved;
+                enterApp();
+            }
+        } catch {}
+    })();
 </script>
 </body>
 </html>
