@@ -1,0 +1,10 @@
+package com.example.healthcare.Repository;
+
+import com.example.healthcare.model.Invoice;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
+
+    Optional<Invoice> findByInvoiceId(String invoiceId);
+}
